@@ -26,7 +26,7 @@ import numpy.typing as npt
 import scipy as sp
 from joblib import Parallel, delayed
 from scipy.stats import nbinom
-from tqdm.auto import tqdm
+from tqdm.auto import tqdm, trange
 
 from ..utils import LOGGER
 
@@ -209,7 +209,7 @@ def monte_carlo_int_nb(
     else:
         res = [
             sub_monte(i, dat, mu, gamma, phi, gene_subset_n)
-            for i in range(dat.shape[0])
+            for i in trange(dat.shape[0])
         ]
     return {
         "gamma_star": np.array([x[0]["gamma_star"] for x in res]),
