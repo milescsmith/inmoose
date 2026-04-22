@@ -38,6 +38,7 @@ def pycombat_seq(
     gene_subset_n=None,
     ref_batch=None,
     na_cov_action="raise",
+    n_jobs: int = 1,
 ):
     """pycombat_seq is an improved model from ComBat using negative binomial regression, which specifically targets RNA-Seq count data.
 
@@ -61,6 +62,9 @@ def pycombat_seq(
         batch id of the batch to use as reference (default: `None`)
     na_cov_action : str
         Option to choose the way to handle missing covariates
+    n_jobs : int, optional
+        number of parallel jobs to run for Monte-Carlo integration, only useful when shrink = True. If set to -1, all 
+        CPUs are used; if set to 1, it runs in sequential mode. (default: 1)
 
         - :code:`"raise"` raise an error if missing covariates and stop the code
         - :code:`"remove"` remove samples with missing covariates and raise a warning
@@ -192,7 +196,7 @@ def pycombat_seq(
                 gamma=gamma_hat[:, i],
                 phi=phi_hat[:, i],
                 gene_subset_n=gene_subset_n,
-                n_jobs=cpu_count(),
+                n_jobs=n_jobs
             )
             for i, k in enumerate(np.unique(batch))
         }
