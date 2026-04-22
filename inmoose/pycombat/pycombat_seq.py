@@ -18,13 +18,15 @@
 
 # This file is based on the file 'R/ComBat_seq.R' of the Bioconductor sva package (version 3.44.0).
 
+from multiprocessing import cpu_count
+
 import numpy as np
 import pandas as pd
 
 from ..edgepy import DGEList, estimateGLMCommonDisp, estimateGLMTagwiseDisp, glmFit
 from ..utils import LOGGER
 from .covariates import make_design_matrix
-from .helper_seq import match_quantiles, vec2mat
+from .helper_seq import match_quantiles, monte_carlo_int_nb, vec2mat
 
 
 def pycombat_seq(
@@ -183,7 +185,26 @@ def pycombat_seq(
     ####### In each batch, compute posterior estimation through Monte-Carlo integration #######
     if shrink:
         LOGGER.info("Apply shrinkage - computing posterior estimates for parameters")
-        raise NotImplementedError
+        monte_carlo_res = {
+            k: monte_carlo_int_nb(
+                dat=counts[:, batches_ind[k]],
+                mu=mu_hat[:, batches_ind[k]],
+                gamma=gamma_hat[:, i],
+                phi=phi_hat[:, i],
+                gene_subset_n=gene_subset_n,
+                n_jobs=cpu_count(),
+            )
+            for i, k in enumerate(np.unique(batch))
+        }
+        gamma_star_mat = np.column_stack(
+            [_["gamma_star"] for _ in monte_carlo_res.values()]
+        )
+        phi_star_mat = np.column_stack(
+            [_["phi_star"] for _ in monte_carlo_res.values()]
+        )
+        if shrink_disp:
+            LOGGER.info("Apply shrinkage to mean only")
+            phi_star_mat = phi_hat
     else:
         LOGGER.info("shrinkage off - using GLM estimates for parameters")
         gamma_star_mat = gamma_hat

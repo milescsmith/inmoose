@@ -30,7 +30,8 @@ dependencies = [
   "scikit-learn",
   "statsmodels>=0.14.5",
   "matplotlib",
-  "jinja2"
+  "jinja2",
+  "tqdm>=4.67.3",
 ]
 
 [project.urls]
@@ -47,3 +48,9 @@ doc = [
 
 [build-system]
 requires = ["setuptools", "numpy>=2.0.0", "scipy", "Cython>=3.0.0", "wheel"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.11",
+    "ty>=0.0.32",
+]

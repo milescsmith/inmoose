@@ -164,7 +164,9 @@ class QCReport:
             formatted = matrix.copy()
             for col in matrix.columns:
                 formatted[col] = formatted[col].apply(
-                    lambda v: f"<strong>statistics</strong>={v[0]}<br><strong>p-value</strong>={v[1]}<br><strong>test performed</strong>={v[2]}<br><strong>number of samples used</strong>={v[3]}"
+                    lambda v: (
+                        f"<strong>statistics</strong>={v[0]}<br><strong>p-value</strong>={v[1]}<br><strong>test performed</strong>={v[2]}<br><strong>number of samples used</strong>={v[3]}"
+                    )
                 )
             return formatted.to_html(escape=False)
 

@@ -2,7 +2,8 @@
 
 ## [0.9.2-dev]
 
-None
+- Add `inmoose.pycombat.helper_seq.monte_carlo_int_nb`, which mimics the equivalent function in R and allows parameter
+  estimation shrinkage in `pycombat_seq`
 
 ## [0.9.1]
 
